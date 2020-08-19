@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>WWO</title>
+</head>
+<body>
+	<h1>Welcome to WWO!</h1>
+	<h2>Choose a name, then press Join!</h2>
+	<form action="/Game/Join" method="POST">
+	<label for=player_name>Name:</label>
+	<input type="text" id="player_name" name="player_name" value="John Wick">
+	<input type="submit" value="Join!">
+	<hr>
+	<h2>Players:</h2>
+	<h4>{{ range $i := .AllNames}}{{$i}}<br/>
+	{{end}}</h4>
+	<hr>
+</body>
+</html>

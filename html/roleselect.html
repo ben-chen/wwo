@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Role Selection</title>
+</head>
+<body>
+	<h1>Role Selection</h1>
+	<h2>The first <i>n</i> roles will be used</h2>
+	<form action="/UpdateRoles/{{.MyName}}" method="POST">
+		<label for=role1>Role:</label>
+		<input type="text" id="role1" name="role1" value="{{index .AllRoles 0}}">
+		</br>
+		<label for=role2>Role:</label>
+		<input type="text" id="role2" name="role2" value="{{index .AllRoles 1}}">
+		</br>
+		<label for=role3>Role:</label>
+		<input type="text" id="role3" name="role3" value="{{index .AllRoles 2}}">
+		</br>
+		<label for=role4>Role:</label>
+		<input type="text" id="role4" name="role4" value="{{index .AllRoles 3}}">
+		</br>
+		<label for=role4>Role:</label>
+		<input type="text" id="role5" name="role5" value="{{index .AllRoles 4}}">
+		</br>
+		<label for=role4>Role:</label>
+		<input type="text" id="role6" name="role6" value="{{index .AllRoles 5}}">
+		</br>
+		<label for=role4>Role:</label>
+		<input type="text" id="role7" name="role7" value="{{index .AllRoles 6}}">
+		</br>
+		<label for=role4>Role:</label>
+		<input type="text" id="role8" name="role8" value="{{index .AllRoles 7}}">
+		</br>
+		<label for=role4>Role:</label>
+		<input type="text" id="role9" name="role9" value="{{index .AllRoles 8}}">
+		</br>
+		<label for=role4>Role:</label>
+		<input type="text" id="role10" name="role10" value="{{index .AllRoles 9}}">
+	</form>
+	<br/>
+	<input type="submit" value="Update Roles">
+	<hr>
+
+	<h2>Players:</h2>
+	<h4>{{ range $i := .AllNames}}{{$i}}<br/>
+	{{end}}</h4>
+	<hr>
+
+	<form action="/Game/{{.MyName}}">
+		<input type="submit" value="Done!">
+	</form>
+</body>
+</html>

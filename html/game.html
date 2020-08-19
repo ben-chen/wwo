@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>WWO</title>
+</head>
+<body>
+	<h1>Playing: WWO</h1>
+	Your name: {{.MyName}} <br/>
+  Your role: {{.MyRole}} <br/>
+	<hr>
+	<h2>Players:</h2>
+  <h4>{{ range $i := .AllNames}}{{$i}}<br/>
+  {{end}}</h4>
+	<hr>
+  <form action="/Game/Assign/{{.MyName}}" method="POST">
+		<input type="submit" value="Assign Roles">
+	</form>
+  <hr>
+  <h2>Roles:</h2>
+  <h4>{{$length := len .AllNames}}
+    {{ range $k, $i := .AllRoles}}
+      {{if lt $k $length}}
+        {{$i}}<br/>
+      {{end}}
+    {{end}}</h4>
+  <form action="/RoleSelect/{{.MyName}}" method="Get">
+		<input type="submit" value="Role Selection">
+	</form>
+  <hr>
+	<form action="/Game/Leave/{{.MyName}}" method="POST">
+		<input type="submit" value="Leave">
+	</form>
+</body>
+
+<p id="timer"></p>
+
+<script>
+// Set the date we're counting down to
+var countDownDate = new Date.now().getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().now().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  document.getElementById("timer").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+</script>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>WWO</title>
+</head>
+<body>
+	<h1>Roles Revealed!</h1>
+	<hr>
+	<h4>{{ range $i := .AllNames}}{{$i}}<br/>
+	{{end}}</h4>
+	<hr>
+	<form action="/Game/NewX/{{.MyName}}" method="POST">
+		<input type="submit" value="Return">
+	</form>
+</body>
+
+</html>

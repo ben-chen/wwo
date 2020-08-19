@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>WWO</title>
+</head>
+<body>
+	<h1>Playing: WWO</h1>
+	Your name: {{.MyName}} <br/>
+  Your role: {{.MyRole}} (Mayor)<br/>
+	<hr>
+	<h2>Players:</h2>
+  <h4>{{ range $i := .AllNames}}{{$i}}<br/>
+  {{end}}</h4>
+	<hr>
+  <form action="/Game/Assign/{{.MyName}}" method="POST">
+		<input type="submit" value="Assign Roles">
+	</form>
+  <hr>
+  <h2>Roles:</h2>
+  <h4>{{$length := len .AllNames}}
+    {{ range $k, $i := .AllRoles}}
+      {{if lt $k $length}}
+        {{$i}}<br/>
+      {{end}}
+    {{end}}</h4>
+  <form action="/RoleSelect/{{.MyName}}" method="GET">
+		<input type="submit" value="Role Selection">
+	</form>
+	<hr>
+	<form action="/Reveal/{{.MyName}}" method="POST">
+		<input type="submit" value="Reveal">
+	</form>
+  <hr>
+	<form action="/Game/Leave/{{.MyName}}" method="POST">
+		<input type="submit" value="Leave">
+	</form>
+
+</body>
+
+</html>

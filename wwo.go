@@ -134,7 +134,7 @@ func gameHandler(w http.ResponseWriter, r *http.Request) {
 			for j, p := range tbl.Players {
 				p.Role = roles[rand_perm[j]]
 			}
-			tbl.Players[j].Mayor = true
+			tbl.Players[rand_num].Mayor = true
 			http.Redirect(w, r, "/Game/" + player_name, http.StatusSeeOther)
 		}
 	}

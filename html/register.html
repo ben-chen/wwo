@@ -8,13 +8,20 @@
 	<h1>Welcome to WWO!</h1>
 	<h2>Choose a name, then press Join!</h2>
 	<form action="/Game/Join" method="POST">
-	<label for=player_name>Name:</label>
-	<input type="text" id="player_name" name="player_name" value="John Wick">
-	<input type="submit" value="Join!">
+		<label for=player_name>Name:</label>
+		<input type="text" id="player_name" name="player_name" value="John Wick">
+		<input type="submit" value="Join!">
+	</form>
 	<hr>
 	<h2>Players:</h2>
 	<h4>{{ range $i := .AllNames}}{{$i}}<br/>
 	{{end}}</h4>
 	<hr>
+	<div style="position:fixed; width:100%; height:70px; padding:5px; bottom:0px;">
+  <a href="https://github.com/ben-chen/wwo">github</a>
+  </div>
+
 </body>
+
+<hr>
 </html>

@@ -31,6 +31,8 @@ type GameData struct {
 
 var tbl Table
 var roles []string
+var seer_roles []string
+var revealed bool
 
 func getNames(t *Table) []string {
 	var l []string
@@ -92,6 +94,10 @@ func gameHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
+		if revealed {
+			http.Redirect(w, r, "/Reveal/", http.StatusSeeOther)
+		}
+
 		player_name := r.URL.Path[len("/Game/"):]
 		if player_name == "" {
 			renderTemplate(w, "register", GameData{MyName: "", MyRole: "", AllNames: getNames(&tbl), AllRoles: roles})
@@ -100,7 +106,11 @@ func gameHandler(w http.ResponseWriter, r *http.Request) {
 			if player.Name == "" {
 				http.Redirect(w, r, "/", http.StatusSeeOther)
 			}
-			renderTemplate(w, "game", GameData{MyName: player.Name, MyRole: player.Role, AllNames: getNames(&tbl), AllRoles: roles})
+			if player.Mayor {
+				renderTemplate(w, "game_mayor", GameData{MyName: player.Name, MyRole: player.Role, AllNames: getNames(&tbl), AllRoles: roles})
+			} else {
+				renderTemplate(w, "game", GameData{MyName: player.Name, MyRole: player.Role, AllNames: getNames(&tbl), AllRoles: roles})
+			}
 		}
 
 
@@ -112,6 +122,9 @@ func gameHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		switch req[:4] {
+		case "NewX":
+			revealed = false
+			http.Redirect(w, r, "/Game/" + req[4:], http.StatusSeeOther)
 		case "Join":
 			player := Player{Name: r.Form["player_name"][0], Role: "", Mayor: false}
 			fmt.Printf("Adding %s\n", player.Name)
@@ -128,11 +141,16 @@ func gameHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 		case "Assi":
+			if len(tbl.Players) == 0 {
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
+			}
 			player_name := req[len("Assign/"):]
 			rand_perm := rand.Perm(len(tbl.Players))
 			rand_num := rand.Intn(len(tbl.Players))
 			for j, p := range tbl.Players {
 				p.Role = roles[rand_perm[j]]
+				p.Mayor = false
 			}
 			tbl.Players[rand_num].Mayor = true
 			http.Redirect(w, r, "/Game/" + player_name, http.StatusSeeOther)
@@ -161,13 +179,31 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/RoleSelect/" + r.URL.Path[len("/UpdateRoles/"):], http.StatusSeeOther)
 }
 
+func revealHandler(w http.ResponseWriter, r *http.Request) {
+	player_name := r.URL.Path[len("/Reveal/"):]
+	revealed = true
+
+	var name_roles []string
+	for _, p := range tbl.Players {
+		mayor_tag := ""
+		if p.Mayor {
+			mayor_tag = " (Mayor)"
+		}
+		name_roles = append(name_roles, p.Name + mayor_tag + ": <" + p.Role + ">")
+	}
+	renderTemplate(w, "reveal", GameData{MyName: player_name, AllNames: name_roles})
+}
+
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 	tbl.Players = make([]*Player, 0, 9)
 	roles = []string{"Villager", "Werewolf", "Seer", "Villager", "Villager", "Villager", "Mason", "Mason", "Fortune Teller", "Cow"}
+	seer_roles = []string{"Werewolf", "Seer"}
+	revealed = false
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/Game/", gameHandler)
 	http.HandleFunc("/RoleSelect/", roleHandler)
 	http.HandleFunc("/UpdateRoles/", updateHandler)
+	http.HandleFunc("/Reveal/", revealHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
